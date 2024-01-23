@@ -30,6 +30,7 @@ with st.sidebar:
         sac.MenuItem('TF-IDF', icon="bezier2"),
         sac.MenuItem('Split Data', icon="hourglass-split"),
         sac.MenuItem('KNN', icon="activity"),
+        sac.MenuItem('Grafik', icon="bar-chart-line"),
     ], open_all=False)
 
 if selected == "Home":
@@ -124,25 +125,46 @@ if selected == "TF-IDF":
 if selected == "Split Data":
     st.title("Split Data")
     st.subheader("Pilih Ukuran Data Testing")
-    n = st.slider('', min_value=1, max_value=5, value=2, step=1)
-    st.subheader("Data Train")
-    col1, col2 = st.columns(2)
+    n = st.slider('', min_value=2, max_value=3, value=2, step=1)
     data = read_data()[5]
     tf_idf = tf_idf(data)
     hasil = split_data(tf_idf, n)
+    st.subheader(f"Total Data = {(len(hasil[0])+len(hasil[1]))}")
+    # st.subheader("Data Train")
+    col1, col2 = st.columns(2)
     st.session_state.n = n
     with col1:
         st.subheader("X Train")
+        col11, col12 = st.columns(2)
+        with col11:
+            st.subheader("Jumlah = ")
+        with col12:
+            st.subheader(len(hasil[0]))
         st.dataframe(hasil[0])
     with col2:
         st.subheader("X Test")
+        col21, col22 = st.columns(2)
+        with col21:
+            st.subheader("Jumlah = ")
+        with col22:
+            st.subheader(len(hasil[1]))
         st.dataframe(hasil[1])
     col3, col4 = st.columns(2)
     with col3:
         st.subheader("y Train")
+        col31, col32 = st.columns(2)
+        with col31:
+            st.subheader("Jumlah = ")
+        with col32:
+            st.subheader(len(hasil[2]))
         st.dataframe(hasil[2])
     with col4:
         st.subheader("y Test")
+        col41, col42 = st.columns(2)
+        with col41:
+            st.subheader("Jumlah = ")
+        with col42:
+            st.subheader(len(hasil[3]))
         st.dataframe(hasil[3])
 
 if selected == "KNN":
@@ -176,4 +198,34 @@ if selected == "KNN":
         plt.ylabel('True Labels')
         st.subheader("Akurasi Yang Diperoleh")
         st.subheader(f"{knn[0]}%")
+        st.pyplot(plt.gcf())
+
+if selected == "Grafik":
+    if st.session_state.n is None:
+        st.title("Halaman Grafik")
+        data = read_data()[5]
+        tf_idf = tf_idf(data)
+        hasil = split_data(tf_idf, 2)
+        graph = grafik(hasil)
+        labels = ['K 3', 'K 5', 'K 7', 'K 9']
+        bars = plt.bar(labels, graph, color='blue')
+        plt.title(f'Akurasi Split Data Testing 20%')
+        plt.xlabel('Data Points')
+        plt.ylabel('Accuracy (%)')
+        for bar, value in zip(bars, graph):
+            plt.text(bar.get_x() + bar.get_width() / 2 - 0.15, bar.get_height() + 1, f'{round(value,2)}%', ha='center', va='bottom', color='black', fontweight='bold')
+        st.pyplot(plt.gcf())
+    else:
+        st.title("Halaman Grafik")
+        data = read_data()[5]
+        tf_idf = tf_idf(data)
+        hasil = split_data(tf_idf, st.session_state.n)
+        graph = grafik(hasil)
+        labels = ['K 3', 'K 5', 'K 7', 'K 9']
+        bars = plt.bar(labels, graph, color='blue')
+        plt.title(f'Akurasi Split Data Testing {st.session_state.n}0%')
+        plt.xlabel('Data Points')
+        plt.ylabel('Accuracy (%)')
+        for bar, value in zip(bars, graph):
+            plt.text(bar.get_x() + bar.get_width() / 2 - 0.15, bar.get_height() + 1, f'{round(value,2)}%', ha='center', va='bottom', color='black', fontweight='bold')
         st.pyplot(plt.gcf())

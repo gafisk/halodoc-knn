@@ -34,7 +34,7 @@ def tf_idf(data):
     filtered_data = []    
     for label in label_list:
         label_data = data[data['Label'] == label]
-        label_data_sample = label_data.sample(n=min(400, len(label_data)), random_state=42)
+        label_data_sample = label_data.sample(n=min(1509, len(label_data)), random_state=42)
         filtered_data.append(label_data_sample)
     selected_data = pd.concat(filtered_data)
     data = selected_data
@@ -63,5 +63,13 @@ def knn(hasil, k):
     class_names = label_encoder.classes_
     c_matrix = confusion_matrix(y_test, y_pred)
     return accuracy*100, c_matrix, class_names
+
+def grafik(hasil):
+    list_akurasi = []
+    for k in range(3, 10, 2):
+        model = knn(hasil, k)
+        list_akurasi.append(model[0])
+    return list_akurasi
+
     
 
