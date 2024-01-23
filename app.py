@@ -34,7 +34,7 @@ with st.sidebar:
 
 if selected == "Home":
     st.title("Halaman Home")
-    st.write("Klasifikasi Komentar Applikasi Halodociah")
+    st.write("Klasifikasi Komentar Applikasi Halodoc")
 if selected == "Dataset":
     st.title("Halaman Dataset")
     label = label()
